@@ -8,6 +8,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, query, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyDMmUwClLDQOR68iN_VlsPkDrtp62sCbTw",
     authDomain: "download-b658f.firebaseapp.com",
@@ -17,10 +18,12 @@
     appId: "1:307216445454:web:1a67c57111acf93bffcc5f",
     measurementId: "G-FDD2ZMND9Z"
   };
+
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   window._db = db;
   window._fns = { collection, getDocs, doc, setDoc, deleteDoc, query, orderBy, addDoc };
+
   async function initDefaultUsers() {
     const snap = await getDocs(collection(db, "users"));
     if (!snap.empty) return;
@@ -31,6 +34,7 @@
     ];
     for (const u of defaults) await setDoc(doc(db,"users",u.id), u);
   }
+
   initDefaultUsers().then(()=> window.dispatchEvent(new Event('firebase-ready')));
 </script>
 <style>
@@ -52,16 +56,17 @@ body::before{width:500px;height:500px;background:radial-gradient(#b3ddf5,#d6f5ef
 body::after{width:380px;height:380px;background:radial-gradient(#ffe3b3,#ffd6d0);bottom:-80px;right:-80px;animation:blob2 11s ease-in-out infinite;}
 @keyframes blob1{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,20px)}}
 @keyframes blob2{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,-30px)}}
+
 .view{display:none;position:relative;z-index:1;}
 .view.active{display:flex;}
 
-/* 로딩 */
+/* ── 로딩 ── */
 #vLoading{min-height:100vh;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
-.spinner{width:48px;height:48px;border:4px solid var(--blue-light);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;}
+.spinner{width:48px;height:48px;border:4px solid var(--blue-light);border-top-color:var(--blue);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{color:var(--text-soft);font-size:.9rem;}
 
-/* 로그인 */
+/* ── LOGIN ── */
 #vLogin{min-height:100vh;align-items:center;justify-content:center;}
 .login-wrap{width:100%;max-width:440px;padding:24px;}
 .logo{text-align:center;margin-bottom:28px;animation:slideDown .6s ease;}
@@ -79,46 +84,19 @@ body::after{width:380px;height:380px;background:radial-gradient(#ffe3b3,#ffd6d0)
 .fi input:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(74,159,212,.15);}
 .fi input::placeholder{color:#b5cad9;}
 .btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,var(--blue),var(--mint));color:#fff;border:none;border-radius:var(--radius-sm);font-size:.97rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;box-shadow:0 6px 20px rgba(74,159,212,.35);transition:transform .15s,box-shadow .2s;}
-.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(74,159,212,.4);}
 .err{display:none;background:var(--coral-light);color:var(--coral);border:1px solid #f8c9be;border-radius:8px;padding:9px 13px;font-size:.81rem;margin-top:12px;text-align:center;}
 .err.show{display:block;animation:shake .35s ease;}
 
-/* 공통 네비 */
-.top-nav{background:rgba(255,255,255,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(74,159,212,.08);}
-.nav-brand{display:flex;align-items:center;gap:10px;}
-.nav-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.nav-brand-text{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--blue-dark);}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.nav-username{font-size:.8rem;color:var(--text-soft);}
-.btn-nav-out{padding:7px 16px;background:var(--coral-light);color:var(--coral);border:1px solid #f8c9be;border-radius:8px;font-size:.8rem;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
-.btn-nav-out:hover{background:#fde0d8;}
-.btn-nav-back{padding:7px 14px;background:var(--blue-light);color:var(--blue);border:1px solid #c5dff5;border-radius:8px;font-size:.8rem;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;}
-.btn-nav-back:hover{background:#d4ebfa;}
-
-/* 사용자 탭 */
-.user-tabs{background:rgba(255,255,255,.7);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto;}
-.user-tab-btn{padding:13px 18px;border:none;background:transparent;font-size:.85rem;font-weight:600;color:var(--text-soft);cursor:pointer;font-family:'Noto Sans KR',sans-serif;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;margin-bottom:-1px;white-space:nowrap;}
-.user-tab-btn:hover{color:var(--blue);}
-.user-tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);}
-.user-body{flex:1;padding:24px;max-width:800px;width:100%;margin:0 auto;}
-.user-tab-panel{display:none;}
-.user-tab-panel.active{display:block;}
-
-/* 사용자 페이지 */
-#vUser{min-height:100vh;flex-direction:column;align-items:stretch;}
-
-/* ── 카테고리 그리드 ── */
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:8px;}
-.cat-card{background:rgba(255,255,255,.92);border-radius:var(--radius);padding:24px 20px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.8);cursor:pointer;transition:transform .18s,box-shadow .18s;text-align:center;animation:fadeIn .4s ease both;}
-.cat-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(74,159,212,.18);}
-.cat-emoji{font-size:2.2rem;margin-bottom:10px;}
-.cat-name{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:var(--text);margin-bottom:4px;}
-.cat-count{font-size:.76rem;color:var(--text-soft);}
-
-/* ── 파일 목록 뷰 ── */
-#vFileList{min-height:100vh;flex-direction:column;align-items:stretch;}
-.page-body{flex:1;padding:24px;max-width:800px;width:100%;margin:0 auto;}
-.file-list{display:flex;flex-direction:column;gap:11px;margin-top:8px;}
+/* ── DOWNLOAD ── */
+#vDownload{min-height:100vh;align-items:center;justify-content:center;}
+.dl-wrap{width:100%;max-width:480px;padding:24px;}
+.welcome-bar{background:linear-gradient(135deg,var(--mint-light),var(--blue-light));border-radius:var(--radius);padding:18px 22px;margin-bottom:22px;display:flex;align-items:center;gap:13px;border:1px solid rgba(61,191,160,.2);animation:slideDown .5s ease;}
+.w-avatar{width:46px;height:46px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.w-text strong{font-size:.97rem;color:var(--text);font-weight:700;}
+.w-text p{font-size:.78rem;color:var(--text-soft);margin-top:2px;}
+.sec-label{font-size:.74rem;font-weight:700;letter-spacing:1.2px;color:var(--blue);text-transform:uppercase;margin-bottom:13px;}
+.file-list{display:flex;flex-direction:column;gap:11px;margin-bottom:26px;}
 .file-row{background:#fff;border-radius:13px;padding:14px 16px;display:flex;align-items:center;gap:13px;box-shadow:0 3px 14px rgba(74,159,212,.09);border:1px solid #e6f0f9;transition:transform .15s,box-shadow .15s;animation:fadeIn .4s ease both;}
 .file-row:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(74,159,212,.16);}
 .f-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
@@ -126,37 +104,23 @@ body::after{width:380px;height:380px;background:radial-gradient(#ffe3b3,#ffd6d0)
 .f-info{flex:1;min-width:0;}
 .f-name{font-size:.91rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .f-size{font-size:.74rem;color:var(--text-soft);margin-top:2px;}
-.btn-dl{background:linear-gradient(135deg,var(--blue),#5ec0de);color:#fff;border:none;padding:8px 16px;border-radius:9px;font-size:.8rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;white-space:nowrap;transition:transform .15s;box-shadow:0 3px 10px rgba(74,159,212,.28);text-decoration:none;display:inline-block;}
+.btn-dl{background:linear-gradient(135deg,var(--blue),#5ec0de);color:#fff;border:none;padding:8px 16px;border-radius:9px;font-size:.8rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;white-space:nowrap;transition:transform .15s,box-shadow .2s;box-shadow:0 3px 10px rgba(74,159,212,.28);text-decoration:none;display:inline-block;}
 .btn-dl:hover{transform:translateY(-1px);}
 .btn-ghost{width:100%;padding:10px;background:transparent;border:1.5px solid var(--border);border-radius:9px;color:var(--text-soft);font-size:.83rem;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:background .15s,color .15s;}
 .btn-ghost:hover{background:#f3f8fd;color:var(--text);}
-.page-header{margin-bottom:20px;}
-.page-header h2{font-family:'Nunito',sans-serif;font-size:1.3rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px;}
-.page-header p{font-size:.82rem;color:var(--text-soft);margin-top:4px;}
 
-/* 마이페이지 */
-.mypage-section{background:rgba(255,255,255,.9);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.8);margin-bottom:16px;}
-.mypage-title{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:16px;}
-.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:.88rem;}
-.info-row:last-child{border-bottom:none;}
-.info-label{color:var(--text-soft);font-weight:500;}
-.info-value{color:var(--text);font-weight:600;}
-.captcha-box{background:linear-gradient(135deg,var(--blue-light),var(--mint-light));border-radius:12px;padding:16px;text-align:center;margin-bottom:14px;border:1.5px solid var(--border);}
-.captcha-question{font-family:'Nunito',sans-serif;font-size:1.6rem;font-weight:800;color:var(--blue-dark);letter-spacing:10px;font-style:italic;text-shadow:2px 2px 4px rgba(74,159,212,.3);}
-.captcha-hint{font-size:.76rem;color:var(--text-soft);margin-top:4px;}
-.btn-refresh-captcha{background:none;border:none;cursor:pointer;font-size:18px;margin-left:8px;vertical-align:middle;}
-.dl-log-row{background:#fff;border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:13px;box-shadow:0 2px 10px rgba(74,159,212,.07);border:1px solid #e6f0f9;margin-bottom:9px;animation:fadeIn .3s ease both;}
-.dl-log-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--blue-light);}
-.dl-log-info{flex:1;min-width:0;}
-.dl-log-name{font-size:.88rem;font-weight:600;color:var(--text);}
-.dl-log-time{font-size:.74rem;color:var(--text-soft);margin-top:2px;}
-
-/* 관리자 */
+/* ── ADMIN ── */
 #vAdmin{min-height:100vh;flex-direction:column;align-items:stretch;}
 .admin-nav{background:rgba(255,255,255,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(74,159,212,.08);}
-.admin-nav .nav-brand span{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue-dark);}
+.nav-brand{display:flex;align-items:center;gap:11px;}
+.nav-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--mint));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.nav-brand span{font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:800;color:var(--blue-dark);}
 .nav-badge{font-size:.72rem;color:var(--purple);background:var(--purple-light);padding:2px 8px;border-radius:20px;font-weight:600;margin-left:6px;}
-.admin-tabs{background:rgba(255,255,255,.7);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:4px;overflow-x:auto;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-user{font-size:.8rem;color:var(--text-soft);}
+.btn-nav-out{padding:7px 16px;background:var(--coral-light);color:var(--coral);border:1px solid #f8c9be;border-radius:8px;font-size:.8rem;font-weight:600;font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
+.btn-nav-out:hover{background:#fde0d8;}
+.admin-tabs{background:rgba(255,255,255,.7);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:4px;overflow-x:auto;}
 .tab-btn{padding:14px 20px;border:none;background:transparent;font-size:.87rem;font-weight:600;color:var(--text-soft);cursor:pointer;font-family:'Noto Sans KR',sans-serif;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;margin-bottom:-1px;white-space:nowrap;}
 .tab-btn:hover{color:var(--blue);}
 .tab-btn.active{color:var(--blue);border-bottom-color:var(--blue);}
@@ -192,29 +156,23 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
 .btn-del{padding:5px 12px;background:var(--coral-light);color:var(--coral);border:none;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-del:hover{background:#fdd5cc;}
 .btn-assign{padding:5px 12px;background:var(--yellow-light);color:#c49a00;border:none;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-assign:hover{background:#fdefc3;}
 
-/* 파일 관리 카드 */
+/* ── 파일 관리 탭 ── */
 .file-manage-card{background:rgba(255,255,255,.9);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.8);padding:20px 22px;margin-bottom:14px;}
 .fmc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .fmc-info .fmc-name{font-size:.95rem;font-weight:700;color:var(--text);}
-.fmc-info .fmc-meta{font-size:.77rem;color:var(--text-soft);margin-top:3px;}
-.fmc-info .fmc-cat{display:inline-block;background:var(--purple-light);color:var(--purple);border-radius:20px;padding:2px 10px;font-size:.74rem;font-weight:600;margin-top:5px;}
+.fmc-info .fmc-size{font-size:.77rem;color:var(--text-soft);margin-top:3px;}
+.fmc-info .fmc-url{font-size:.74rem;color:var(--blue);margin-top:3px;word-break:break-all;}
 .fmc-btns{display:flex;gap:7px;flex-shrink:0;}
 .assigned-users{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
-.assigned-label{font-size:.76rem;font-weight:700;color:var(--text-soft);margin-bottom:8px;}
+.assigned-label{font-size:.76rem;font-weight:700;color:var(--text-soft);margin-bottom:8px;letter-spacing:.5px;}
 .user-chips{display:flex;flex-wrap:wrap;gap:7px;}
 .chip{display:inline-flex;align-items:center;gap:5px;background:var(--blue-light);color:var(--blue);border-radius:20px;padding:4px 12px;font-size:.78rem;font-weight:600;}
 .chip button{background:none;border:none;cursor:pointer;color:var(--coral);font-size:13px;line-height:1;padding:0;}
 .no-assign{font-size:.8rem;color:var(--text-xsoft);}
 
-/* 카테고리 관리 */
-.cat-manage-row{background:rgba(255,255,255,.9);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 3px 12px rgba(74,159,212,.08);border:1px solid #e6f0f9;margin-bottom:10px;}
-.cat-manage-emoji{font-size:1.6rem;flex-shrink:0;}
-.cat-manage-info{flex:1;}
-.cat-manage-name{font-size:.93rem;font-weight:700;color:var(--text);}
-.cat-manage-count{font-size:.76rem;color:var(--text-soft);margin-top:2px;}
-
-/* 모달 */
+/* ── MODAL ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(30,50,70,.35);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:20px;}
 .modal-bg.open{display:flex;animation:fadeIn .25s ease;}
 .modal{background:#fff;border-radius:var(--radius);padding:30px 28px;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(30,50,70,.18);max-height:90vh;overflow-y:auto;}
@@ -223,20 +181,21 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
 .modal-field label{display:block;font-size:.8rem;font-weight:500;color:var(--text-soft);margin-bottom:5px;}
 .modal-field input,.modal-field select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:.9rem;font-family:'Noto Sans KR',sans-serif;color:var(--text);outline:none;transition:border .2s;background:#fff;}
 .modal-field input:focus,.modal-field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,159,212,.12);}
-.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:8px;}
-.emoji-btn{width:36px;height:36px;border:1.5px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s;}
-.emoji-btn:hover,.emoji-btn.selected{border-color:var(--blue);background:var(--blue-light);}
 .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;}
 .btn-cancel{padding:9px 20px;background:transparent;border:1.5px solid var(--border);border-radius:9px;color:var(--text-soft);font-size:.86rem;font-family:'Noto Sans KR',sans-serif;cursor:pointer;}
 .btn-save{padding:9px 22px;background:linear-gradient(135deg,var(--blue),var(--mint));color:#fff;border:none;border-radius:9px;font-size:.86rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(74,159,212,.28);}
+
+/* 파일 추가 모달 안 행 */
 .file-section-title{font-size:.85rem;font-weight:600;color:var(--text);margin:20px 0 10px;}
-.file-manage-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;max-height:240px;overflow-y:auto;}
+.file-manage-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;max-height:260px;overflow-y:auto;}
 .fm-row{background:var(--blue-light);border-radius:11px;padding:12px 13px;display:flex;flex-direction:column;gap:7px;}
 .fm-row-top{display:grid;grid-template-columns:1fr 80px 90px 32px;gap:7px;align-items:center;}
 .fm-row input,.fm-row select{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:.82rem;font-family:'Noto Sans KR',sans-serif;color:var(--text);outline:none;background:#fff;width:100%;}
 .btn-rm-file{width:30px;height:30px;background:var(--coral-light);color:var(--coral);border:none;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .btn-add-file{width:100%;padding:9px;background:var(--mint-light);color:var(--mint);border:1px dashed rgba(61,191,160,.4);border-radius:9px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-.user-check-list{display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto;border:1.5px solid var(--border);border-radius:9px;padding:12px;}
+
+/* 사용자 체크박스 목록 */
+.user-check-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto;border:1.5px solid var(--border);border-radius:9px;padding:12px;}
 .user-check-item{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--text);cursor:pointer;}
 .user-check-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer;}
 
@@ -247,13 +206,13 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
 @media(max-width:680px){
-  .admin-body,.user-body,.page-body{padding:16px;}
+  .admin-body{padding:16px;}
   .stats-row{grid-template-columns:1fr 1fr;}
-  .admin-tabs,.user-tabs{padding:0 10px;}
-  .tab-btn,.user-tab-btn{padding:12px 10px;font-size:.8rem;}
-  .admin-nav,.top-nav{padding:0 16px;}
-  .cat-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+  .admin-tabs{padding:0 10px;}
+  .tab-btn{padding:12px 10px;font-size:.8rem;}
+  .admin-nav{padding:0 16px;}
   .fm-row-top{grid-template-columns:1fr 70px 32px;}
 }
 </style>
@@ -289,116 +248,45 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
 </div>
 </div>
 
-<!-- 사용자 메인 (카테고리 목록) -->
-<div id="vUser" class="view">
-  <nav class="top-nav">
-    <div class="nav-brand">
-      <div class="nav-logo">☁️</div>
-      <span class="nav-brand-text">파일 다운로드</span>
-    </div>
-    <div class="nav-right">
-      <span class="nav-username" id="userNavName"></span>
-      <button class="btn-nav-out" onclick="doLogout()">🚪 로그아웃</button>
-    </div>
-  </nav>
-  <div class="user-tabs">
-    <button class="user-tab-btn active" onclick="openUserTab('utFiles',this)">📂 파일 다운로드</button>
-    <button class="user-tab-btn" onclick="openUserTab('utDlLog',this)">📋 다운로드 기록</button>
-    <button class="user-tab-btn" onclick="openUserTab('utMypage',this)">👤 마이페이지</button>
+<!-- 다운로드 -->
+<div id="vDownload" class="view">
+<div class="dl-wrap">
+  <div class="logo" style="margin-bottom:18px;">
+    <div class="logo-icon">☁️</div>
+    <h1>파일 다운로드</h1>
   </div>
-  <div class="user-body">
-
-    <!-- 파일 다운로드 탭 (카테고리 목록) -->
-    <div id="utFiles" class="user-tab-panel active">
-      <div style="margin-bottom:20px;">
-        <div style="font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:4px;">
-          안녕하세요, <span id="userWelcomeName"></span>님! 👋
-        </div>
-        <div style="font-size:.82rem;color:var(--text-soft);">카테고리를 선택해서 파일을 다운로드하세요.</div>
-      </div>
-      <div class="cat-grid" id="userCatGrid"></div>
-    </div>
-
-    <!-- 다운로드 기록 -->
-    <div id="utDlLog" class="user-tab-panel">
-      <div class="sec-header"><div class="sec-title">📋 내 다운로드 기록</div></div>
-      <div id="userDlLogList"></div>
-    </div>
-
-    <!-- 마이페이지 -->
-    <div id="utMypage" class="user-tab-panel">
-      <div class="mypage-section">
-        <div class="mypage-title">👤 내 정보</div>
-        <div class="info-row"><span class="info-label">아이디</span><span class="info-value" id="mpId"></span></div>
-        <div class="info-row"><span class="info-label">이름</span><span class="info-value" id="mpName"></span></div>
-        <div class="info-row"><span class="info-label">역할</span><span class="info-value">일반 사용자</span></div>
-      </div>
-      <div class="mypage-section">
-        <div class="mypage-title">🔒 비밀번호 변경</div>
-        <div class="field"><label>현재 비밀번호</label>
-          <div class="fi"><span class="ico">🔒</span><input type="password" id="mpCurrentPw" placeholder="현재 비밀번호"></div>
-        </div>
-        <div class="field"><label>새 비밀번호</label>
-          <div class="fi"><span class="ico">✏️</span><input type="password" id="mpNewPw" placeholder="새 비밀번호 (6자 이상)"></div>
-        </div>
-        <div class="field"><label>새 비밀번호 확인</label>
-          <div class="fi"><span class="ico">✏️</span><input type="password" id="mpNewPw2" placeholder="새 비밀번호 다시 입력"></div>
-        </div>
-        <div class="field">
-          <label>보안문자 확인</label>
-          <div class="captcha-box">
-            <div class="captcha-question" id="captchaQuestion">????</div>
-            <div class="captcha-hint">위 숫자 4자리를 입력하세요 <button class="btn-refresh-captcha" onclick="refreshCaptcha()">🔄</button></div>
-          </div>
-          <div class="fi"><span class="ico">🔢</span><input type="text" id="captchaAnswer" placeholder="숫자 4자리 입력" maxlength="4"></div>
-        </div>
-        <button class="btn-primary" onclick="changePw()">비밀번호 변경</button>
-        <div class="err" id="pwErr"></div>
+  <div class="card">
+    <div class="welcome-bar">
+      <div class="w-avatar">😊</div>
+      <div class="w-text">
+        <strong><span id="dlUserName"></span>님, 환영합니다!</strong>
+        <p>아래 파일을 다운로드하실 수 있습니다.</p>
       </div>
     </div>
-
+    <div class="sec-label">📂 다운로드 가능한 파일</div>
+    <div class="file-list" id="dlFileList"></div>
+    <button class="btn-ghost" onclick="doLogout()">🚪 로그아웃</button>
   </div>
 </div>
-
-<!-- 파일 목록 뷰 (카테고리 클릭 후) -->
-<div id="vFileList" class="view">
-  <nav class="top-nav">
-    <div class="nav-brand">
-      <button class="btn-nav-back" onclick="goBackToCategories()">← 뒤로</button>
-    </div>
-    <div class="nav-right">
-      <span class="nav-username" id="fileListNavName"></span>
-      <button class="btn-nav-out" onclick="doLogout()">🚪 로그아웃</button>
-    </div>
-  </nav>
-  <div class="page-body">
-    <div class="page-header">
-      <h2 id="fileListTitle">📂 파일 목록</h2>
-      <p id="fileListDesc"></p>
-    </div>
-    <div class="file-list" id="fileListContent"></div>
-  </div>
 </div>
 
 <!-- 관리자 -->
 <div id="vAdmin" class="view">
-  <nav class="admin-nav top-nav">
+  <nav class="admin-nav">
     <div class="nav-brand">
       <div class="nav-logo">☁️</div>
       <span>파일 다운로드</span>
       <span class="nav-badge">관리자</span>
     </div>
     <div class="nav-right">
-      <span class="nav-username" id="adminName"></span>
+      <span class="nav-user" id="adminName"></span>
       <button class="btn-nav-out" onclick="doLogout()">🚪 로그아웃</button>
     </div>
   </nav>
   <div class="admin-tabs">
     <button class="tab-btn active" onclick="openTab('tabDash',this)">📊 대시보드</button>
     <button class="tab-btn" onclick="openTab('tabUsers',this)">👥 사용자 관리</button>
-    <button class="tab-btn" onclick="openTab('tabCats',this)">🗂 카테고리 관리</button>
     <button class="tab-btn" onclick="openTab('tabFiles',this)">📂 파일 관리</button>
-    <button class="tab-btn" onclick="openTab('tabDlLogs',this)">⬇ 다운로드 기록</button>
     <button class="tab-btn" onclick="openTab('tabLogs',this)">📋 로그인 기록</button>
   </div>
   <div class="admin-body">
@@ -425,15 +313,6 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
       </table></div>
     </div>
 
-    <!-- 카테고리 관리 -->
-    <div id="tabCats" class="tab-panel">
-      <div class="sec-header">
-        <div class="sec-title">🗂 카테고리 목록</div>
-        <button class="btn-add" onclick="openAddCat()">＋ 카테고리 추가</button>
-      </div>
-      <div id="catManageList"></div>
-    </div>
-
     <!-- 파일 관리 -->
     <div id="tabFiles" class="tab-panel">
       <div class="sec-header">
@@ -441,18 +320,6 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
         <button class="btn-add" onclick="openAddFile()">＋ 파일 추가</button>
       </div>
       <div id="fileCardList"></div>
-    </div>
-
-    <!-- 다운로드 기록 -->
-    <div id="tabDlLogs" class="tab-panel">
-      <div class="sec-header">
-        <div class="sec-title">⬇ 전체 다운로드 기록</div>
-        <button class="btn-danger" onclick="clearDlLogs()">🗑 기록 삭제</button>
-      </div>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>시간</th><th>사용자</th><th>카테고리</th><th>파일명</th></tr></thead>
-        <tbody id="adminDlLogTbl"></tbody>
-      </table></div>
     </div>
 
     <!-- 로그인 기록 -->
@@ -470,7 +337,7 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
   </div>
 </div>
 
-<!-- 모달: 사용자 -->
+<!-- 모달: 사용자 추가/편집 -->
 <div class="modal-bg" id="modalUser">
   <div class="modal">
     <div class="modal-title" id="modalUserTitle">👤 사용자 추가</div>
@@ -493,23 +360,6 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
   </div>
 </div>
 
-<!-- 모달: 카테고리 추가/편집 -->
-<div class="modal-bg" id="modalCat">
-  <div class="modal">
-    <div class="modal-title" id="modalCatTitle">🗂 카테고리 추가</div>
-    <div class="modal-field"><label>카테고리 이름 *</label><input type="text" id="cName" placeholder="예: 교육자료, 계약서"></div>
-    <div class="modal-field">
-      <label>이모지 선택</label>
-      <div class="emoji-grid" id="emojiGrid"></div>
-      <input type="text" id="cEmoji" placeholder="직접 입력도 가능" style="margin-top:8px;">
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modalCat')">취소</button>
-      <button class="btn-save" onclick="saveCat()">저장</button>
-    </div>
-  </div>
-</div>
-
 <!-- 모달: 파일 추가 -->
 <div class="modal-bg" id="modalFile">
   <div class="modal">
@@ -517,11 +367,16 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
     <div class="modal-field"><label>파일 이름 *</label><input type="text" id="fName" placeholder="예: 2024년 교육자료.pdf"></div>
     <div class="modal-field"><label>파일 크기</label><input type="text" id="fSize" placeholder="예: 3.2 MB"></div>
     <div class="modal-field"><label>파일 종류</label>
-      <select id="fType"><option value="pdf">📄 PDF</option><option value="zip">📦 ZIP</option><option value="doc">📝 DOC</option><option value="etc">📁 기타</option></select>
+      <select id="fType">
+        <option value="pdf">📄 PDF</option>
+        <option value="zip">📦 ZIP</option>
+        <option value="doc">📝 DOC</option>
+        <option value="etc">📁 기타</option>
+      </select>
     </div>
-    <div class="modal-field"><label>카테고리</label><select id="fCat"><option value="">카테고리 없음</option></select></div>
     <div class="modal-field"><label>다운로드 URL *</label><input type="text" id="fUrl" placeholder="Google Drive / OneDrive 링크"></div>
-    <div class="modal-field"><label>공개할 사용자 선택</label>
+    <div class="modal-field">
+      <label>공개할 사용자 선택</label>
       <div class="user-check-list" id="userCheckList"></div>
     </div>
     <div class="modal-footer">
@@ -531,12 +386,13 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
   </div>
 </div>
 
-<!-- 모달: 공개 설정 -->
+<!-- 모달: 파일 공개 사용자 수정 -->
 <div class="modal-bg" id="modalAssign">
   <div class="modal">
     <div class="modal-title">👥 공개 사용자 수정</div>
     <div style="font-size:.85rem;color:var(--text-soft);margin-bottom:14px;" id="assignFileName"></div>
-    <div class="modal-field"><label>파일을 볼 수 있는 사용자</label>
+    <div class="modal-field">
+      <label>파일을 볼 수 있는 사용자</label>
       <div class="user-check-list" id="assignCheckList"></div>
     </div>
     <div class="modal-footer">
@@ -549,11 +405,13 @@ td.soft{color:var(--text-soft);font-size:.81rem;}
 <div class="toast" id="toast"></div>
 
 <script>
-const FICONS={pdf:"📄",zip:"📦",doc:"📝",etc:"📁"};
-const EMOJIS=['📁','📂','📄','📦','📝','🗂','📋','📊','📈','🎓','💼','🔧','🖥','📱','🎯','💡','🔑','🏆','⭐','🌟','✅','🗺','📌','🔖'];
-let currentUser=null, editingUserId=null, editingFileId=null, editingCatId=null;
-let allUsers=[], allLogs=[], allFiles=[], allDlLogs=[], allCats=[];
-let selectedEmoji='📁';
+const FICONS = {pdf:"📄",zip:"📦",doc:"📝",etc:"📁"};
+let currentUser = null;
+let editingUserId = null;
+let editingFileId = null;
+let allUsers = [];
+let allLogs = [];
+let allFiles = []; // 전체 파일 목록
 
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>{v.classList.remove('active');v.style.display='none';});
@@ -561,22 +419,34 @@ function showView(id){
   el.style.display='flex';
   requestAnimationFrame(()=>el.classList.add('active'));
 }
-window.addEventListener('firebase-ready',()=>showView('vLogin'));
-const db=()=>window._db;
-const fns=()=>window._fns;
 
-async function loadAll(){
+window.addEventListener('firebase-ready',()=> showView('vLogin'));
+
+function db(){ return window._db; }
+function fns(){ return window._fns; }
+
+async function loadUsers(){
+  const {collection,getDocs}=fns();
+  const snap=await getDocs(collection(db(),"users"));
+  allUsers=snap.docs.map(d=>d.data());
+  return allUsers;
+}
+async function loadLogs(){
   const {collection,getDocs,query,orderBy}=fns();
-  const [us,fs,cs]=await Promise.all([
-    getDocs(collection(db(),"users")),
-    getDocs(collection(db(),"files")),
-    getDocs(collection(db(),"categories")),
-  ]);
-  allUsers=us.docs.map(d=>d.data());
-  allFiles=fs.docs.map(d=>({id:d.id,...d.data()}));
-  allCats=cs.docs.map(d=>({id:d.id,...d.data()}));
-  try{ allLogs=(await getDocs(query(collection(db(),"logs"),orderBy("time","desc")))).docs.map(d=>d.data()); }catch(e){allLogs=[];}
-  try{ allDlLogs=(await getDocs(query(collection(db(),"dlLogs"),orderBy("time","desc")))).docs.map(d=>d.data()); }catch(e){allDlLogs=[];}
+  try{
+    const q=query(collection(db(),"logs"),orderBy("time","desc"));
+    const snap=await getDocs(q);
+    allLogs=snap.docs.map(d=>d.data());
+  }catch(e){allLogs=[];}
+  return allLogs;
+}
+async function loadFiles(){
+  const {collection,getDocs}=fns();
+  try{
+    const snap=await getDocs(collection(db(),"files"));
+    allFiles=snap.docs.map(d=>({id:d.id,...d.data()}));
+  }catch(e){allFiles=[];}
+  return allFiles;
 }
 
 // ── 로그인 ──
@@ -584,29 +454,30 @@ async function doLogin(){
   const id=document.getElementById('loginId').value.trim();
   const pw=document.getElementById('loginPw').value;
   const {collection,addDoc}=fns();
-  await loadAll();
+  await loadUsers();
   const user=allUsers.find(u=>u.id===id&&u.pw===pw);
   const now=new Date().toLocaleString('ko-KR');
   try{ await addDoc(collection(db(),"logs"),{time:now,id:id||'(없음)',name:user?user.name:'-',ok:!!user}); }catch(e){}
   if(!user){
     const e=document.getElementById('loginErr');
-    e.classList.add('show'); setTimeout(()=>e.classList.remove('show'),3000); return;
+    e.classList.add('show');
+    setTimeout(()=>e.classList.remove('show'),3000);
+    return;
   }
   currentUser=user;
   if(user.role==='admin'){
     document.getElementById('adminName').textContent=user.name+' 님';
-    renderDash(); renderUserTable(); renderCatManage(); renderFileCards(); renderFullLogs(); renderAdminDlLogs();
+    await Promise.all([loadUsers(),loadLogs(),loadFiles()]);
+    renderDash(); renderUserTable(); renderFileCards(); renderFullLogs();
     showView('vAdmin');
   } else {
-    document.getElementById('userNavName').textContent=user.name+' 님';
-    document.getElementById('userWelcomeName').textContent=user.name;
-    document.getElementById('mpId').textContent=user.id;
-    document.getElementById('mpName').textContent=user.name;
-    renderUserCatGrid();
-    refreshCaptcha();
-    showView('vUser');
+    document.getElementById('dlUserName').textContent=user.name;
+    await loadFiles();
+    renderDownload(user);
+    showView('vDownload');
   }
 }
+
 function doLogout(){
   currentUser=null;
   document.getElementById('loginId').value='';
@@ -614,278 +485,94 @@ function doLogout(){
   showView('vLogin');
 }
 
-// ── 사용자 탭 ──
-function openUserTab(id,btn){
-  document.querySelectorAll('.user-tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.user-tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
-  if(id==='utDlLog') renderUserDlLog();
-}
-
-// ── 카테고리 그리드 (사용자) ──
-function renderUserCatGrid(){
-  const grid=document.getElementById('userCatGrid');
-  // 이 사용자가 볼 수 있는 파일들
-  const myFiles=allFiles.filter(f=>f.assignedUsers&&f.assignedUsers.includes(currentUser.id));
-  const directFiles=currentUser.files||[];
-
-  // 카테고리별로 분류
-  const catsWithFiles=[];
-
-  // 카테고리 있는 파일들
-  allCats.forEach(cat=>{
-    const catFiles=myFiles.filter(f=>f.categoryId===cat.id);
-    if(catFiles.length>0) catsWithFiles.push({cat, files:catFiles});
-  });
-
-  // 카테고리 없는 파일 (기타)
-  const uncatFiles=myFiles.filter(f=>!f.categoryId||!allCats.find(c=>c.id===f.categoryId));
-  if(uncatFiles.length>0) catsWithFiles.push({cat:{id:'__uncat',name:'기타',emoji:'📁'},files:uncatFiles});
-
-  // 직접 추가된 파일
-  if(directFiles.length>0) catsWithFiles.push({cat:{id:'__direct',name:'개인 파일',emoji:'👤'},files:directFiles});
-
-  if(!catsWithFiles.length){
-    grid.innerHTML='<p style="color:var(--text-xsoft);font-size:.86rem;grid-column:1/-1;">등록된 파일이 없습니다.</p>';
+// ── 다운로드 ──
+function renderDownload(user){
+  const list=document.getElementById('dlFileList');
+  list.innerHTML='';
+  // 사용자 파일: 직접 추가된 파일 + 파일관리탭에서 공개된 파일
+  const directFiles = user.files||[];
+  const sharedFiles = allFiles.filter(f=>f.assignedUsers&&f.assignedUsers.includes(user.id));
+  const combined = [...directFiles, ...sharedFiles];
+  if(!combined.length){
+    list.innerHTML='<p style="color:var(--text-soft);font-size:.85rem;padding:10px 0;">등록된 파일이 없습니다.</p>';
     return;
   }
-
-  grid.innerHTML=catsWithFiles.map((item,i)=>`
-    <div class="cat-card" style="animation-delay:${i*.07}s" onclick="openCategoryFiles('${item.cat.id}')">
-      <div class="cat-emoji">${item.cat.emoji||'📁'}</div>
-      <div class="cat-name">${item.cat.name}</div>
-      <div class="cat-count">파일 ${item.files.length}개</div>
-    </div>`).join('');
+  combined.forEach((f,i)=>{
+    const row=document.createElement('div');
+    row.className='file-row';
+    row.style.animationDelay=(i*.07)+'s';
+    row.innerHTML=`<div class="f-icon ${f.type}">${FICONS[f.type]||FICONS.etc}</div>
+      <div class="f-info"><div class="f-name">${f.name}</div><div class="f-size">${f.size||''}</div></div>
+      <a class="btn-dl" href="${f.url}" target="_blank" rel="noopener">⬇ 다운로드</a>`;
+    list.appendChild(row);
+  });
 }
 
-// ── 카테고리 클릭 → 파일 목록 ──
-function openCategoryFiles(catId){
-  let cat, files;
-  if(catId==='__direct'){
-    cat={name:'개인 파일', emoji:'👤'};
-    files=currentUser.files||[];
-  } else if(catId==='__uncat'){
-    cat={name:'기타', emoji:'📁'};
-    const myFiles=allFiles.filter(f=>f.assignedUsers&&f.assignedUsers.includes(currentUser.id));
-    files=myFiles.filter(f=>!f.categoryId||!allCats.find(c=>c.id===f.categoryId));
-  } else {
-    cat=allCats.find(c=>c.id===catId);
-    const myFiles=allFiles.filter(f=>f.assignedUsers&&f.assignedUsers.includes(currentUser.id));
-    files=myFiles.filter(f=>f.categoryId===catId);
-  }
-  if(!cat) return;
-
-  document.getElementById('fileListTitle').textContent=`${cat.emoji||'📂'} ${cat.name}`;
-  document.getElementById('fileListDesc').textContent=`총 ${files.length}개의 파일이 있습니다.`;
-  document.getElementById('fileListNavName').textContent=currentUser.name+' 님';
-
-  const list=document.getElementById('fileListContent');
-  list.innerHTML='';
-  if(!files.length){
-    list.innerHTML='<p style="color:var(--text-soft);font-size:.85rem;">파일이 없습니다.</p>';
-  } else {
-    files.forEach((f,i)=>{
-      const row=document.createElement('div');
-      row.className='file-row';
-      row.style.animationDelay=(i*.07)+'s';
-      row.innerHTML=`<div class="f-icon ${f.type||'etc'}">${FICONS[f.type]||FICONS.etc}</div>
-        <div class="f-info"><div class="f-name">${f.name}</div><div class="f-size">${f.size||''}</div></div>
-        <a class="btn-dl" href="${f.url}" target="_blank" rel="noopener" onclick="logDownload('${f.name}','${cat.name}')">⬇ 다운로드</a>`;
-      list.appendChild(row);
-    });
-  }
-  showView('vFileList');
-}
-
-function goBackToCategories(){
-  showView('vUser');
-}
-
-// ── 다운로드 기록 ──
-async function logDownload(fileName, catName){
-  const {collection,addDoc}=fns();
-  const now=new Date().toLocaleString('ko-KR');
-  try{ await addDoc(collection(db(),"dlLogs"),{time:now,userId:currentUser.id,userName:currentUser.name,fileName,catName:catName||'-'}); }catch(e){}
-}
-
-async function renderUserDlLog(){
-  const {collection,getDocs,query,orderBy}=fns();
-  try{ allDlLogs=(await getDocs(query(collection(db(),"dlLogs"),orderBy("time","desc")))).docs.map(d=>d.data()); }catch(e){allDlLogs=[];}
-  const myLogs=allDlLogs.filter(l=>l.userId===currentUser.id);
-  const el=document.getElementById('userDlLogList');
-  if(!myLogs.length){ el.innerHTML='<p style="color:var(--text-xsoft);font-size:.86rem;">다운로드 기록이 없습니다.</p>'; return; }
-  el.innerHTML=myLogs.map((l,i)=>`
-    <div class="dl-log-row" style="animation-delay:${i*.05}s">
-      <div class="dl-log-icon">📄</div>
-      <div class="dl-log-info">
-        <div class="dl-log-name">${l.fileName} <span style="font-size:.74rem;color:var(--text-xsoft);">[${l.catName||'-'}]</span></div>
-        <div class="dl-log-time">${l.time}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ── 보안문자 ──
-function refreshCaptcha(){
-  const code=String(Math.floor(1000+Math.random()*9000));
-  window._captchaCode=code;
-  const q=document.getElementById('captchaQuestion');
-  q.textContent=code;
-  q.style.letterSpacing='8px';
-  q.style.fontStyle='italic';
-  q.style.textShadow='2px 2px 4px rgba(74,159,212,.3)';
-  document.getElementById('captchaAnswer').value='';
-}
-
-// ── 비밀번호 변경 ──
-async function changePw(){
-  const cur=document.getElementById('mpCurrentPw').value;
-  const nw=document.getElementById('mpNewPw').value;
-  const nw2=document.getElementById('mpNewPw2').value;
-  const cap=document.getElementById('captchaAnswer').value.trim();
-  const errEl=document.getElementById('pwErr');
-  const showErr=(msg)=>{ errEl.textContent='❌ '+msg; errEl.classList.add('show'); setTimeout(()=>errEl.classList.remove('show'),3000); };
-  if(cur!==currentUser.pw){ showErr('현재 비밀번호가 올바르지 않습니다.'); return; }
-  if(nw.length<6){ showErr('새 비밀번호는 6자 이상이어야 합니다.'); return; }
-  if(nw!==nw2){ showErr('새 비밀번호가 일치하지 않습니다.'); return; }
-  if(cap!==window._captchaCode){ showErr('보안문자가 올바르지 않습니다.'); refreshCaptcha(); return; }
-  const {doc,setDoc}=fns();
-  const updated={...currentUser,pw:nw};
-  await setDoc(doc(db(),"users",currentUser.id),updated);
-  currentUser=updated;
-  document.getElementById('mpCurrentPw').value='';
-  document.getElementById('mpNewPw').value='';
-  document.getElementById('mpNewPw2').value='';
-  refreshCaptcha();
-  toast('✅ 비밀번호가 변경되었습니다!');
-}
-
-// ── 관리자 탭 ──
+// ── 탭 ──
 async function openTab(id,btn){
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  await loadAll();
-  if(id==='tabDash') renderDash();
-  if(id==='tabUsers') renderUserTable();
-  if(id==='tabCats') renderCatManage();
-  if(id==='tabFiles') renderFileCards();
-  if(id==='tabDlLogs') renderAdminDlLogs();
-  if(id==='tabLogs') renderFullLogs();
+  if(id==='tabDash'){await loadUsers();await loadLogs();renderDash();}
+  if(id==='tabUsers'){await loadUsers();renderUserTable();}
+  if(id==='tabFiles'){await loadUsers();await loadFiles();renderFileCards();}
+  if(id==='tabLogs'){await loadLogs();renderFullLogs();}
 }
 
 // ── 대시보드 ──
 function renderDash(){
+  const tf=allUsers.reduce((a,u)=>a+(u.files?u.files.length:0),0)+allFiles.length;
+  const tl=allLogs.filter(l=>l.ok).length;
   document.getElementById('statsRow').innerHTML=[
     {ico:'👥',num:allUsers.filter(u=>u.role!=='admin').length,lbl:'일반 사용자'},
-    {ico:'🗂',num:allCats.length,lbl:'카테고리 수'},
+    {ico:'🛡️',num:allUsers.filter(u=>u.role==='admin').length,lbl:'관리자'},
     {ico:'📂',num:allFiles.length,lbl:'공유 파일 수'},
-    {ico:'⬇',num:allDlLogs.length,lbl:'총 다운로드 수'},
+    {ico:'✅',num:tl,lbl:'총 로그인 횟수'},
   ].map(s=>`<div class="stat-card"><div class="s-ico">${s.ico}</div><div class="s-num">${s.num}</div><div class="s-lbl">${s.lbl}</div></div>`).join('');
   const t=document.getElementById('dashLogTbl');
-  t.innerHTML=allLogs.slice(0,8).map(logRow).join('')||noData(4);
-}
-function logRow(l){ return `<tr><td class="soft">${l.time}</td><td>${l.id}</td><td>${l.name}</td><td><span class="${l.ok?'log-ok':'log-fail'}">${l.ok?'✅ 성공':'❌ 실패'}</span></td></tr>`; }
-function noData(c){ return `<tr><td colspan="${c}" style="text-align:center;color:var(--text-xsoft);padding:20px;">기록 없음</td></tr>`; }
-
-// ── 카테고리 관리 ──
-function renderCatManage(){
-  const el=document.getElementById('catManageList');
-  if(!allCats.length){ el.innerHTML='<p style="color:var(--text-xsoft);font-size:.88rem;padding:16px 0;">카테고리가 없습니다. 추가해주세요.</p>'; return; }
-  el.innerHTML=allCats.map(c=>`
-    <div class="cat-manage-row">
-      <div class="cat-manage-emoji">${c.emoji||'📁'}</div>
-      <div class="cat-manage-info">
-        <div class="cat-manage-name">${c.name}</div>
-        <div class="cat-manage-count">파일 ${allFiles.filter(f=>f.categoryId===c.id).length}개</div>
-      </div>
-      <div class="action-btns">
-        <button class="btn-edit" onclick="openEditCat('${c.id}')">✏️ 편집</button>
-        <button class="btn-del" onclick="deleteCat('${c.id}')">🗑 삭제</button>
-      </div>
-    </div>`).join('');
+  t.innerHTML=allLogs.slice(0,8).map(logRow).join('')||`<tr><td colspan="4" style="text-align:center;color:var(--text-xsoft);padding:20px;">기록 없음</td></tr>`;
 }
 
-function openAddCat(){
-  editingCatId=null;
-  document.getElementById('modalCatTitle').textContent='🗂 카테고리 추가';
-  document.getElementById('cName').value='';
-  document.getElementById('cEmoji').value='';
-  selectedEmoji='📁';
-  renderEmojiGrid();
-  document.getElementById('modalCat').classList.add('open');
-}
-function openEditCat(id){
-  const c=allCats.find(x=>x.id===id); if(!c) return;
-  editingCatId=id;
-  document.getElementById('modalCatTitle').textContent='✏️ 카테고리 편집';
-  document.getElementById('cName').value=c.name;
-  document.getElementById('cEmoji').value=c.emoji||'';
-  selectedEmoji=c.emoji||'📁';
-  renderEmojiGrid();
-  document.getElementById('modalCat').classList.add('open');
-}
-function renderEmojiGrid(){
-  document.getElementById('emojiGrid').innerHTML=EMOJIS.map(e=>`
-    <button class="emoji-btn ${e===selectedEmoji?'selected':''}" onclick="selectEmoji('${e}')">${e}</button>`).join('');
-}
-function selectEmoji(e){
-  selectedEmoji=e;
-  document.getElementById('cEmoji').value=e;
-  renderEmojiGrid();
-}
-async function saveCat(){
-  const name=document.getElementById('cName').value.trim();
-  const emoji=document.getElementById('cEmoji').value.trim()||selectedEmoji||'📁';
-  if(!name){ toast('⚠️ 카테고리 이름은 필수입니다.'); return; }
-  const {collection,addDoc,doc,setDoc}=fns();
-  if(editingCatId){
-    const c=allCats.find(x=>x.id===editingCatId);
-    await setDoc(doc(db(),"categories",editingCatId),{...c,name,emoji});
-    toast(`✅ '${name}' 카테고리가 수정되었습니다.`);
-  } else {
-    await addDoc(collection(db(),"categories"),{name,emoji});
-    toast(`✅ '${name}' 카테고리가 추가되었습니다.`);
-  }
-  closeModal('modalCat');
-  await loadAll(); renderCatManage(); renderDash();
-}
-async function deleteCat(id){
-  const c=allCats.find(x=>x.id===id);
-  if(!c||!confirm(`'${c.name}' 카테고리를 삭제할까요?\n(파일은 삭제되지 않고 카테고리 없음으로 변경됩니다.)`)) return;
-  const {doc,deleteDoc}=fns();
-  await deleteDoc(doc(db(),"categories",id));
-  toast('🗑 카테고리가 삭제되었습니다.');
-  await loadAll(); renderCatManage(); renderDash();
+function logRow(l){
+  return `<tr><td class="soft">${l.time}</td><td>${l.id}</td><td>${l.name}</td>
+    <td><span class="${l.ok?'log-ok':'log-fail'}">${l.ok?'✅ 성공':'❌ 실패'}</span></td></tr>`;
 }
 
 // ── 사용자 테이블 ──
 function renderUserTable(){
   document.getElementById('userTbl').innerHTML=allUsers.map(u=>`
-    <tr><td><strong>${u.id}</strong></td><td>${u.name}</td>
-    <td><span class="badge ${u.role}">${u.role==='admin'?'관리자':'일반'}</span></td>
-    <td class="soft">${(u.files?u.files.length:0)+allFiles.filter(f=>f.assignedUsers&&f.assignedUsers.includes(u.id)).length}개</td>
-    <td><div class="action-btns">
-      <button class="btn-edit" onclick="openEditUser('${u.id}')">✏️ 편집</button>
-      ${u.id!==currentUser?.id?`<button class="btn-del" onclick="deleteUser('${u.id}')">🗑 삭제</button>`:''}
-    </div></td></tr>`).join('');
+    <tr>
+      <td><strong>${u.id}</strong></td>
+      <td>${u.name}</td>
+      <td><span class="badge ${u.role}">${u.role==='admin'?'관리자':'일반'}</span></td>
+      <td class="soft">${(u.files?u.files.length:0)+allFiles.filter(f=>f.assignedUsers&&f.assignedUsers.includes(u.id)).length}개</td>
+      <td><div class="action-btns">
+        <button class="btn-edit" onclick="openEditUser('${u.id}')">✏️ 편집</button>
+        ${u.id!==currentUser?.id?`<button class="btn-del" onclick="deleteUser('${u.id}')">🗑 삭제</button>`:''}
+      </div></td>
+    </tr>`).join('');
 }
 
 // ── 파일 카드 ──
 function renderFileCards(){
   const el=document.getElementById('fileCardList');
-  if(!allFiles.length){ el.innerHTML='<p style="color:var(--text-xsoft);font-size:.88rem;padding:16px 0;">등록된 파일이 없습니다.</p>'; return; }
+  if(!allFiles.length){
+    el.innerHTML='<p style="color:var(--text-xsoft);font-size:.88rem;padding:16px 0;">등록된 파일이 없습니다. 위 버튼으로 추가해주세요.</p>';
+    return;
+  }
   el.innerHTML=allFiles.map(f=>{
     const assigned=f.assignedUsers||[];
-    const names=assigned.map(uid=>{ const u=allUsers.find(x=>x.id===uid); return u?u.name:uid; });
-    const cat=allCats.find(c=>c.id===f.categoryId);
+    const assignedNames=assigned.map(uid=>{
+      const u=allUsers.find(x=>x.id===uid);
+      return u?u.name:uid;
+    });
     return `<div class="file-manage-card">
       <div class="fmc-top">
         <div class="fmc-info">
           <div class="fmc-name">${FICONS[f.type]||FICONS.etc} ${f.name}</div>
-          <div class="fmc-meta">${f.size||''}</div>
-          ${cat?`<span class="fmc-cat">${cat.emoji} ${cat.name}</span>`:''}
+          <div class="fmc-size">${f.size||''}</div>
+          <div class="fmc-url">${f.url}</div>
         </div>
         <div class="fmc-btns">
           <button class="btn-assign" onclick="openAssign('${f.id}')">👥 공개 설정</button>
@@ -895,7 +582,10 @@ function renderFileCards(){
       <div class="assigned-users">
         <div class="assigned-label">공개 대상</div>
         <div class="user-chips">
-          ${names.length?names.map((n,i)=>`<span class="chip">${n}<button onclick="removeAssign('${f.id}','${assigned[i]}')">✕</button></span>`).join(''):'<span class="no-assign">공개된 사용자 없음</span>'}
+          ${assignedNames.length
+            ? assignedNames.map((n,i)=>`<span class="chip">${n}<button onclick="removeAssign('${f.id}','${assigned[i]}')">✕</button></span>`).join('')
+            : '<span class="no-assign">공개된 사용자 없음</span>'
+          }
         </div>
       </div>
     </div>`;
@@ -908,91 +598,125 @@ function openAddFile(){
   document.getElementById('fSize').value='';
   document.getElementById('fType').value='pdf';
   document.getElementById('fUrl').value='';
-  // 카테고리 옵션
-  document.getElementById('fCat').innerHTML='<option value="">카테고리 없음</option>'+allCats.map(c=>`<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
-  document.getElementById('userCheckList').innerHTML=allUsers.filter(u=>u.role!=='admin').map(u=>`
-    <label class="user-check-item"><input type="checkbox" value="${u.id}"> ${u.name} (${u.id})</label>`).join('');
+  // 사용자 체크박스
+  const cl=document.getElementById('userCheckList');
+  cl.innerHTML=allUsers.filter(u=>u.role!=='admin').map(u=>`
+    <label class="user-check-item">
+      <input type="checkbox" value="${u.id}"> ${u.name} (${u.id})
+    </label>`).join('');
   document.getElementById('modalFile').classList.add('open');
 }
+
 async function saveFile(){
   const name=document.getElementById('fName').value.trim();
+  const size=document.getElementById('fSize').value.trim();
+  const type=document.getElementById('fType').value;
   const url=document.getElementById('fUrl').value.trim();
   if(!name||!url){ toast('⚠️ 파일 이름과 URL은 필수입니다.'); return; }
+  const checked=Array.from(document.querySelectorAll('#userCheckList input:checked')).map(i=>i.value);
   const {collection,addDoc}=fns();
-  await addDoc(collection(db(),"files"),{
-    name, size:document.getElementById('fSize').value.trim(),
-    type:document.getElementById('fType').value,
-    categoryId:document.getElementById('fCat').value||null,
-    url, assignedUsers:Array.from(document.querySelectorAll('#userCheckList input:checked')).map(i=>i.value)
-  });
+  await addDoc(collection(db(),"files"),{name,size,type,url,assignedUsers:checked});
   toast('✅ 파일이 추가되었습니다.');
-  closeModal('modalFile'); await loadAll(); renderFileCards(); renderDash();
+  closeModal('modalFile');
+  await loadFiles();
+  renderFileCards(); renderDash();
 }
 
 // ── 공개 설정 ──
 function openAssign(fileId){
-  const f=allFiles.find(x=>x.id===fileId); if(!f) return;
+  const f=allFiles.find(x=>x.id===fileId);
+  if(!f) return;
   editingFileId=fileId;
   document.getElementById('assignFileName').textContent='파일: '+f.name;
-  document.getElementById('assignCheckList').innerHTML=allUsers.filter(u=>u.role!=='admin').map(u=>`
-    <label class="user-check-item"><input type="checkbox" value="${u.id}" ${f.assignedUsers&&f.assignedUsers.includes(u.id)?'checked':''}> ${u.name} (${u.id})</label>`).join('');
+  const cl=document.getElementById('assignCheckList');
+  cl.innerHTML=allUsers.filter(u=>u.role!=='admin').map(u=>`
+    <label class="user-check-item">
+      <input type="checkbox" value="${u.id}" ${f.assignedUsers&&f.assignedUsers.includes(u.id)?'checked':''}> ${u.name} (${u.id})
+    </label>`).join('');
   document.getElementById('modalAssign').classList.add('open');
 }
+
 async function saveAssign(){
+  const checked=Array.from(document.querySelectorAll('#assignCheckList input:checked')).map(i=>i.value);
   const {doc,setDoc}=fns();
   const f=allFiles.find(x=>x.id===editingFileId);
-  await setDoc(doc(db(),"files",editingFileId),{...f,assignedUsers:Array.from(document.querySelectorAll('#assignCheckList input:checked')).map(i=>i.value)});
+  await setDoc(doc(db(),"files",editingFileId),{...f,assignedUsers:checked});
   toast('✅ 공개 설정이 저장되었습니다.');
-  closeModal('modalAssign'); await loadAll(); renderFileCards();
+  closeModal('modalAssign');
+  await loadFiles();
+  renderFileCards();
 }
+
 async function removeAssign(fileId,userId){
-  const {doc,setDoc}=fns();
   const f=allFiles.find(x=>x.id===fileId);
-  await setDoc(doc(db(),"files",fileId),{...f,assignedUsers:(f.assignedUsers||[]).filter(id=>id!==userId)});
-  await loadAll(); renderFileCards(); toast('공개 대상에서 제거되었습니다.');
+  if(!f) return;
+  const {doc,setDoc}=fns();
+  const updated={...f,assignedUsers:(f.assignedUsers||[]).filter(id=>id!==userId)};
+  await setDoc(doc(db(),"files",fileId),updated);
+  await loadFiles();
+  renderFileCards();
+  toast('공개 대상에서 제거되었습니다.');
 }
+
 async function deleteFile(fileId){
   if(!confirm('이 파일을 삭제할까요?')) return;
   const {doc,deleteDoc}=fns();
   await deleteDoc(doc(db(),"files",fileId));
   toast('🗑 파일이 삭제되었습니다.');
-  await loadAll(); renderFileCards(); renderDash();
+  await loadFiles();
+  renderFileCards(); renderDash();
 }
 
-// ── 사용자 CRUD ──
+// ── 사용자 모달 ──
 function openAddUser(){
   editingUserId=null;
   document.getElementById('modalUserTitle').textContent='👤 사용자 추가';
-  document.getElementById('mId').value=''; document.getElementById('mId').disabled=false;
-  document.getElementById('mPw').value=''; document.getElementById('pwHint').textContent='(필수)';
-  document.getElementById('mName').value=''; document.getElementById('mRole').value='user';
+  document.getElementById('mId').value='';
+  document.getElementById('mId').disabled=false;
+  document.getElementById('mPw').value='';
+  document.getElementById('pwHint').textContent='(필수)';
+  document.getElementById('mName').value='';
+  document.getElementById('mRole').value='user';
   document.getElementById('mFileList').innerHTML='';
   document.getElementById('modalUser').classList.add('open');
 }
 function openEditUser(id){
-  const u=allUsers.find(x=>x.id===id); if(!u) return;
+  const u=allUsers.find(x=>x.id===id);
+  if(!u) return;
   editingUserId=id;
   document.getElementById('modalUserTitle').textContent='✏️ 사용자 편집';
-  document.getElementById('mId').value=u.id; document.getElementById('mId').disabled=true;
-  document.getElementById('mPw').value=''; document.getElementById('pwHint').textContent='(변경할 때만 입력)';
-  document.getElementById('mName').value=u.name; document.getElementById('mRole').value=u.role;
-  const fl=document.getElementById('mFileList'); fl.innerHTML='';
+  document.getElementById('mId').value=u.id;
+  document.getElementById('mId').disabled=true;
+  document.getElementById('mPw').value='';
+  document.getElementById('pwHint').textContent='(변경할 때만 입력)';
+  document.getElementById('mName').value=u.name;
+  document.getElementById('mRole').value=u.role;
+  const fl=document.getElementById('mFileList');
+  fl.innerHTML='';
   (u.files||[]).forEach(f=>addFileRow(f));
   document.getElementById('modalUser').classList.add('open');
 }
 function addFileRow(f){
   const fl=document.getElementById('mFileList');
-  const d=document.createElement('div'); d.className='fm-row';
-  d.innerHTML=`<div class="fm-row-top">
-    <input type="text" placeholder="파일명" value="${f?esc(f.name):''}">
-    <input type="text" placeholder="크기" value="${f?esc(f.size):''}">
-    <select><option value="pdf" ${f&&f.type==='pdf'?'selected':''}>📄 PDF</option><option value="zip" ${f&&f.type==='zip'?'selected':''}>📦 ZIP</option><option value="doc" ${f&&f.type==='doc'?'selected':''}>📝 DOC</option><option value="etc" ${f&&f.type==='etc'?'selected':''}>📁 기타</option></select>
-    <button class="btn-rm-file" onclick="this.closest('.fm-row').remove()">✕</button>
-  </div>
-  <input type="text" placeholder="다운로드 URL" value="${f?esc(f.url):''}">`;
+  const d=document.createElement('div');
+  d.className='fm-row';
+  d.innerHTML=`
+    <div class="fm-row-top">
+      <input type="text" placeholder="파일명" value="${f?esc(f.name):''}">
+      <input type="text" placeholder="크기" value="${f?esc(f.size):''}">
+      <select>
+        <option value="pdf" ${f&&f.type==='pdf'?'selected':''}>📄 PDF</option>
+        <option value="zip" ${f&&f.type==='zip'?'selected':''}>📦 ZIP</option>
+        <option value="doc" ${f&&f.type==='doc'?'selected':''}>📝 DOC</option>
+        <option value="etc" ${f&&f.type==='etc'?'selected':''}>📁 기타</option>
+      </select>
+      <button class="btn-rm-file" onclick="this.closest('.fm-row').remove()">✕</button>
+    </div>
+    <input type="text" placeholder="다운로드 URL" value="${f?esc(f.url):''}">`;
   fl.appendChild(d);
 }
 function esc(s){ return (s||'').replace(/"/g,'&quot;'); }
+
 async function saveUser(){
   const id=document.getElementById('mId').value.trim();
   const pw=document.getElementById('mPw').value;
@@ -1006,7 +730,8 @@ async function saveUser(){
   const {doc,setDoc}=fns();
   if(editingUserId){
     const u=allUsers.find(x=>x.id===editingUserId);
-    const updated={...u,name,role,files}; if(pw) updated.pw=pw;
+    const updated={...u,name,role,files};
+    if(pw) updated.pw=pw;
     await setDoc(doc(db(),"users",editingUserId),updated);
     toast(`✅ '${name}' 정보가 저장되었습니다.`);
   } else {
@@ -1015,44 +740,51 @@ async function saveUser(){
     await setDoc(doc(db(),"users",id),{id,pw,name,role,files});
     toast(`✅ '${name}' 사용자가 추가되었습니다.`);
   }
-  closeModal('modalUser'); await loadAll(); renderUserTable(); renderDash();
+  closeModal('modalUser');
+  await loadUsers();
+  renderUserTable(); renderDash();
 }
+
 async function deleteUser(id){
   const u=allUsers.find(x=>x.id===id);
   if(!u||!confirm(`'${u.name}' 사용자를 삭제할까요?`)) return;
   const {doc,deleteDoc}=fns();
   await deleteDoc(doc(db(),"users",id));
   toast(`🗑 '${u.name}' 사용자가 삭제되었습니다.`);
-  await loadAll(); renderUserTable(); renderDash();
+  await loadUsers();
+  renderUserTable(); renderDash();
 }
 
 // ── 로그 ──
 function renderFullLogs(){
-  document.getElementById('fullLogTbl').innerHTML=allLogs.length?allLogs.map(logRow).join(''):noData(4);
-}
-function renderAdminDlLogs(){
-  document.getElementById('adminDlLogTbl').innerHTML=allDlLogs.length?allDlLogs.map(l=>`
-    <tr><td class="soft">${l.time}</td><td>${l.userName} (${l.userId})</td><td class="soft">${l.catName||'-'}</td><td>${l.fileName}</td></tr>`).join(''):noData(4);
+  const t=document.getElementById('fullLogTbl');
+  t.innerHTML=allLogs.length?allLogs.map(logRow).join(''):`<tr><td colspan="4" style="text-align:center;color:var(--text-xsoft);padding:20px;">기록 없음</td></tr>`;
 }
 async function clearLogs(){
   if(!confirm('모든 로그인 기록을 삭제할까요?')) return;
   const {collection,getDocs,deleteDoc,doc}=fns();
   const snap=await getDocs(collection(db(),"logs"));
   for(const d of snap.docs) await deleteDoc(doc(db(),"logs",d.id));
-  allLogs=[]; renderFullLogs(); renderDash(); toast('기록이 삭제되었습니다.');
-}
-async function clearDlLogs(){
-  if(!confirm('모든 다운로드 기록을 삭제할까요?')) return;
-  const {collection,getDocs,deleteDoc,doc}=fns();
-  const snap=await getDocs(collection(db(),"dlLogs"));
-  for(const d of snap.docs) await deleteDoc(doc(db(),"dlLogs",d.id));
-  allDlLogs=[]; renderAdminDlLogs(); renderDash(); toast('기록이 삭제되었습니다.');
+  allLogs=[];
+  renderFullLogs(); renderDash();
+  toast('기록이 삭제되었습니다.');
 }
 
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-bg').forEach(bg=>{ bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('open'); }); });
-function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
-document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&document.getElementById('vLogin').classList.contains('active')) doLogin(); });
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-bg').forEach(bg=>{
+  bg.addEventListener('click',e=>{ if(e.target===bg) bg.classList.remove('open'); });
+});
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('vLogin').classList.contains('active')) doLogin();
+});
 </script>
 </body>
 </html>
